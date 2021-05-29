@@ -24,14 +24,14 @@ ENV PATH $maven_path/bin:$SPARK_HOME/bin:$glue_lib/bin:$PATH
 
 WORKDIR /usr/local/share/applications
 
-RUN yum install -y git wget python3 tar zip pandoc which gcc python3-devel postgresql-devel \
-    && pip3 install pytest boto3 numpy scipy pandas PyGreSQL scikit-learn \
+RUN yum install -y git wget python3-3.7.6-1.amzn2.0.1 tar zip pandoc which gcc python3-devel postgresql-devel \
+    && pip3 install pytest boto3 numpy scipy pandas PyGreSQL scikit-learn requests \
     && adduser glue -d /home/glue -s /bin/bash -m \
     && chown -R glue:glue /home/glue \
-    && wget $maven_url -O $maven_zip \
+    && wget -q $maven_url -O $maven_zip \
     && mkdir -p $maven_path && tar -xzf $maven_zip --strip-components=1 --directory $maven_path \
     && rm -f $maven_zip \
-    && wget $glue_spark_url -O $spark_zip \
+    && wget -q $glue_spark_url -O $spark_zip \
     && mkdir -p $SPARK_HOME && tar -xzf $spark_zip --strip-components=1 --directory $SPARK_HOME \
     && rm -f $spark_zip \
     && git clone $glue_repo \
@@ -57,3 +57,5 @@ ENV PYSPARK_DRIVER_PYTHON python3
 ENV PYSPARK_PYTHON python3
 
 ENV PYTHONPATH $SPARK_HOME/python/:$SPARK_HOME/python/lib/py4j-0.10.7-src.zip:$glue_lib/PyGlue.zip:$PYTHONPATH
+
+CMD ["pyspark"]
